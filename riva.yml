@@ -1,27 +1,11 @@
 ---
-
 - name: Deploy an SNO cluster
-  ansible.builtin.import_playbook: openshift-playbook/sno.yml
+  import_playbook: openshift-playbook/sno.yml
   vars:
     temp_directory: "{{ playbook_dir }}/tmp"
-
 
 - name: Deploy Riva on the SNO cluster
   hosts: localhost
   gather_facts: no
-
-  vars:
-    hostname_regex: "([0-9\\.]+)\\s+api\\.{{ cluster_name }}\\."
-    old_api_vip: "{{ lookup('file', '/etc/hosts') | regex_search(hostname_regex, '\\1') }}"
-    cluster_name: gpu-equinix-sno
-
-  tasks:
-
-    - ansible.builtin.set_fact:
-        new_api_vip: "{{ assisted_cluster.api_vip }}"
-
-    - ansible.builtin.include_role:
-        name: etc_hosts
-
-    - ansible.builtin.include_role:
-        name: riva_server
+  roles:
+    - riva_server

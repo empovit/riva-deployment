@@ -6,12 +6,12 @@
   tasks:
 
     - name: Clone SNO deployment playbook
-      ansible.builtin.git:
+      git:
         repo: https://github.com/empovit/openshift-on-equinix-with-gpu.git
         dest: openshift-playbook
         version: main
         single_branch: yes
 
     - name: Pull Riva Helm chart
-      ansible.builtin.debug:
+      debug:
         msg: "TODO: Pull Riva Helm chart from NGC"

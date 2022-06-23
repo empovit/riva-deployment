@@ -3,58 +3,47 @@ NVIDIA Riva for ASR and TTS on OpenShift
 
 # Requirements
 
-* A [supported](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/support-matrix.html#support-matrix) GPU, e.g. V100 or T4.
-* An OpenShift cluster with GPU support
-* Helm 3.x
+* An access to a [supported](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/support-matrix.html#support-matrix) GPU, e.g. V100 or T4 on [Equinix Metal](https://console.equinix.com/).
+* Requirements as described in (Red Hat OpenShift on Equinix Metal with GPU)[https://github.com/empovit/openshift-on-equinix-with-gpu#readme]
 * Access to [NGC Catalog](https://catalog.ngc.nvidia.com/)
+* Helm 3.x
 
-# Required Changes
+# Preparation
 
-These are either required custom values such as passwords, adaptations of the Helm chart for OpenShift, or the implementation of a particular speech services use-case.
+Download the Riva API server Helm chart as described in [the Helm chart documentation](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/riva/helm-charts/riva-api).
 
-* Set `ngcCredentials.password`, `ngcCredentials.email`, and `modelRepoGenerator.modelDeployKey` as described in [Riva Speech Skills Helm chart documentation](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/riva/helm-charts/riva-api).
+Download Riva clients as described in the [Quick Start Guide](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/quick-start-guide.html).
 
-* Change the service type: modify _values.yaml_ or deploy with `--set service.type=NodePort`.
 
-* `hostPath` storage volumes cannot be use "as is" with OpenShift, for now we will force the Helm chart to use `emptyDir`: `    --set modelDeployVolume="" --set artifactDeployVolume=""`
+Run `ansible-playbook init.yml`. This command will download a playbook for installing an SNO cluster on Equinix.
 
+Populate required variables as described in the [playbook's documentation](https://github.com/empovit/openshift-on-equinix-with-gpu#readme).
+
+In addition, add values for pulling NVIDIA images from NGC.
+
+```yaml
+ngc_api_key: <NGC API key>
+ngc_email: <NGC email>
+```
 
 # Running
 
-Deploy the Helm chart
+## Riva API Server
 
-with modified _values.yaml_:
+Running the playbook: `ansible-playbook riva.yml -e "@path/to/vars.yml`
 
-`helm install --create-namespace -n riva riva-api riva-api`
+In order to delete the deployment, run: `helm delete -n riva riva-api`
 
-by passing custom values in the command line:
+In order to destroy the entire setup, run: `ansible-playbook openshift-playbook/sno-cleanup.yml -e "@path/to/vars.yml"`
 
-```sh
-NGC_API_KEY=<your NGC token>
-NGC_EMAIL=<your NGC registration email>
-
-helm install \
-    --create-namespace -n riva \
-    riva-api riva-api \
-    --set ngcCredentials.password=`echo -n $NGC_API_KEY | base64 -w0` \
-    --set ngcCredentials.email=$NGC_EMAIL \
-    --set modelRepoGenerator.modelDeployKey=`echo -n tlt_encode | base64 -w0` \
-    --set modelDeployVolume="" \
-    --set artifactDeployVolume=""
-```
+## Riva Client
 
 Download Riva examples (see the Quick Start Guide), and run
 
 `python riva_quickstart_v2.2.1/transcribe_file_rt.py --server <host>:50051 --audio-file en-US_sample.wav`
 
+# Additional Resources
 
-In order to delete the deployment, run `helm delete -n riva riva-api`
-
-
-# Resources
-
-* [Quick Start Guide](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/quick-start-guide.html)
 * [Tutorials](https://github.com/nvidia-riva/tutorials)
 * [Pre-trained models on NGC](https://catalog.ngc.nvidia.com/models?query=label:%22Riva%22)
-* [Helm chart on NGC](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/riva/helm-charts/riva-api)
 * [Recording Audio from the User](https://web.dev/media-recording-audio/)
