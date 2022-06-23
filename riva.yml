@@ -1,70 +1,27 @@
 ---
-- name: Deploy Riva on an OpenShift cluster on Equinix Metal
-  gather_facts: no
+
+- name: Deploy an SNO cluster
+  ansible.builtin.import_playbook: openshift-playbook/sno.yml
+  vars:
+    temp_directory: "{{ playbook_dir }}/tmp"
+
+
+- name: Deploy Riva on the SNO cluster
   hosts: localhost
+  gather_facts: no
 
   vars:
     hostname_regex: "([0-9\\.]+)\\s+api\\.{{ cluster_name }}\\."
     old_api_vip: "{{ lookup('file', '/etc/hosts') | regex_search(hostname_regex, '\\1') }}"
-
-  pre_tasks:
-    ansible.builtin.git:
-      repo: https://github.com/empovit/openshift-on-equinix-with-gpu.git
-      dest: openshift-playbook
-      version: main
-      single_branch: yes
-
-  import_playbook: openshift-playbook/sno.yml
+    cluster_name: gpu-equinix-sno
 
   tasks:
 
     - ansible.builtin.set_fact:
-        new_api_vip: "{{ openshift_hosts.devices[0].public_ipv4 }}"
+        new_api_vip: "{{ assisted_cluster.api_vip }}"
 
-    - name: Update entries in /etc/hosts
-      ansible.builtin.replace:
-        path: /etc/hosts
-        regexp: "([0-9\\.]+)(\\s+[a-z0-9\\-\\.]+{{ cluster_name }}.redhat.com)"
-        replace: "{{ new_api_vip }}\\2"
-        backup: yes
-        owner: root
-        group: root
-        mode: '0644'
-      become: true
-      when: old_api_vip != new_api_vip
+    - ansible.builtin.include_role:
+        name: etc_hosts
 
-    - name: Add entries to /etc/hosts
-      ansible.builtin.lineinfile:
-        path: /etc/hosts
-        line: |
-
-          {{ new_api_vip }}	api.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	oauth-openshift.apps.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	console-openshift-console.apps.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	grafana-openshift-monitoring.apps.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	thanos-querier-openshift-monitoring.apps.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	prometheus-k8s-openshift-monitoring.apps.{{ cluster_name }}.redhat.com
-          {{ new_api_vip }}	alertmanager-main-openshift-monitoring.apps.{{ cluster_name }}.redhat.com
-        backup: yes
-        owner: root
-        group: root
-        mode: '0644'
-      become: true
-      when: not old_api_vip and new_api_vip not in lookup('file', '/etc/hosts')
-
-    - name: Warn if the IP already in /etc/host for another cluster
-      ansible.builtin.debug:
-        msg: "Address {{ new_api_vip }} is already associated with another cluster in /etc/hosts. Update the file manually"
-      when: new_api_vip not in lookup('file', '/etc/hosts')
-
-    - name: Deploy Riva
-      ansible.builtin.shell: |
-        export KUBECONFIG={{ kubeconfig }}
-        helm install --create-namespace -n riva \
-            riva-api ../riva-api \
-            --set ngcCredentials.password=`echo -n {{ ngc_api_key }} | base64 -w0` \
-            --set ngcCredentials.email={{ ngc_email }} \
-            --set modelRepoGenerator.modelDeployKey=`echo -n tlt_encode | base64 -w0` \
-            --set modelDeployVolume="" \
-            --set artifactDeployVolume="" \
-            --set service.type=NodePort
+    - ansible.builtin.include_role:
+        name: riva_server
