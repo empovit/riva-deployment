@@ -11,8 +11,6 @@
         password: "{{ ngc_api_key | b64encode }}"
         email: "{{ ngc_email }}"
       modelRepoGenerator:
-        imagePullSecret: "{{ lookup('file', pull_secret_path) }}"
-        ngcSecret: "{{ lookup('file', pull_secret_path) }}"
         modelDeployKey: "{{ 'tlt_encode' | b64encode }}"
         modelDeployVolume: ""
         artifactDeployVolume: ""
