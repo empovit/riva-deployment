@@ -5,12 +5,17 @@
 
   tasks:
 
-    - name: Clone SNO deployment playbook
+    - name: Clone GPU-on-OpenShift playbook
       git:
         repo: https://github.com/empovit/openshift-on-equinix-with-gpu.git
         dest: openshift-playbook
         version: main
         single_branch: yes
+
+    - name: Install OpenShift playbook requirements
+      command: ansible-galaxy install -r openshift-playbook/requirements.yml
+      register: _install_requirements
+      changed_when: "'Nothing to do' not in _install_requirements.stdout"
 
     - name: Pull Riva Helm chart
       debug:
