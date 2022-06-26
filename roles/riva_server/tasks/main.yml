@@ -8,7 +8,7 @@
     state: present
     values:
       ngcCredentials:
-        password: "{{ ngc_api_key | b64encode }}"
+        password: "{{ ngc_api_key }}"
         email: "{{ ngc_email }}"
       modelRepoGenerator:
         modelDeployKey: "{{ 'tlt_encode' | b64encode }}"
