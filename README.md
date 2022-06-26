@@ -59,7 +59,7 @@ helm delete -n riva riva-api
 Download Riva examples (see the Quick Start Guide), and run
 
 ```sh
-python riva_quickstart_v2.2.1/transcribe_file_rt.py --server <cluster_ip>:50051 --audio-file en-US_sample.wav
+python riva_quickstart_v2.2.1/examples/transcribe_file_offline.py --server <cluster_node>:<node_port> --audio-file en-US_sample.wav
 ```
 
 # Additional Resources
@@ -67,3 +67,4 @@ python riva_quickstart_v2.2.1/transcribe_file_rt.py --server <cluster_ip>:50051 
 * [Tutorials](https://github.com/nvidia-riva/tutorials)
 * [Pre-trained models on NGC](https://catalog.ngc.nvidia.com/models?query=label:%22Riva%22)
 * [Recording Audio from the User](https://web.dev/media-recording-audio/)
+* [Independent audio samples](http://www.voiceage.com/Audio-Samples-AMR-WB.html)
