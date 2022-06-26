@@ -6,6 +6,7 @@ NVIDIA Riva for ASR and TTS on OpenShift
 * An access to a [supported](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/support-matrix.html#support-matrix) GPU, e.g. V100 or T4 on [Equinix Metal](https://console.equinix.com/).
 * Requirements as described in [Red Hat OpenShift on Equinix Metal with GPU](https://github.com/empovit/openshift-on-equinix-with-gpu#readme).
 * Access to [NGC Catalog](https://catalog.ngc.nvidia.com/)
+* NGC CLI tool [installed and configured](https://ngc.nvidia.com/setup/installers/cli)
 * Helm 3.x
 
 # Preparation
@@ -28,7 +29,7 @@ Download a playbook for installing an SNO cluster on Equinix by running
 
 
 ```sh
-ansible-playbook init.yml
+ansible-playbook init.yml -e "@path/to/vars.yml"
 ```
 
 # Running

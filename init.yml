@@ -3,6 +3,10 @@
   hosts: localhost
   gather_facts: no
 
+  vars:
+    riva_version: 2.2.1
+    riva_helm_archive: riva-api-{{ riva_version }}.tgz
+
   tasks:
 
     - name: Clone GPU-on-OpenShift playbook
@@ -17,6 +21,32 @@
       register: _install_requirements
       changed_when: "'Nothing to do' not in _install_requirements.stdout"
 
+    - name: Check if Helm chart already exists
+      stat:
+        path: riva-api
+      register: helm_dir
+
     - name: Pull Riva Helm chart
-      debug:
-        msg: "TODO: Pull Riva Helm chart from NGC"
+      command: helm fetch https://helm.ngc.nvidia.com/nvidia/riva/charts/{{ riva_helm_archive }} --username='$oauthtoken' --password={{ ngc_api_key }}
+      when: not helm_dir.stat.exists
+
+    - name: Unpack Riva Helm chart
+      unarchive:
+        src: "{{ riva_helm_archive }}"
+        dest: .
+      when: not helm_dir.stat.exists
+
+    - name: Delete downloaded Helm chart archive
+      file:
+        path: "{{ riva_helm_archive }}"
+        state: absent
+      when: not helm_dir.stat.exists
+
+    - name: Check if Quick Start directory already exists
+      stat:
+        path: riva_quickstart_v{{ riva_version }}
+      register: quick_start_dir
+
+    - name: Download Riva Quick Start
+      command: ngc registry resource download-version nvidia/riva/riva_quickstart:{{ riva_version }}
+      when: not quick_start_dir.stat.exists
