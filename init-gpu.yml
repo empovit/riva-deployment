@@ -1,0 +1,21 @@
+---
+- name: Download Riva artifacts
+  import_playbook: nvidia-artifacts.yml
+
+- name: Initialize for OpenShift with GPU on Equnix Metal
+  hosts: localhost
+  gather_facts: no
+
+  tasks:
+
+    - name: Clone GPU-on-OpenShift playbook
+      git:
+        repo: https://github.com/empovit/openshift-on-equinix-with-gpu.git
+        dest: gpu-openshift-playbook
+        version: main
+        single_branch: yes
+
+    - name: Install OpenShift playbook requirements
+      command: ansible-galaxy install -r gpu-openshift-playbook/requirements.yml
+      register: _install_requirements
+      changed_when: "'Nothing to do' not in _install_requirements.stdout"

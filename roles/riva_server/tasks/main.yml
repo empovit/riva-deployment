@@ -2,7 +2,7 @@
   kubernetes.core.helm:
     name: riva-api
     chart_ref: riva-api
-    namespace: riva
+    namespace: "{{ riva_namespace }}"
     create_namespace: true
     kubeconfig: "{{ kubeconfig }}"
     state: present
@@ -16,3 +16,19 @@
         artifactDeployVolume: ""
       service:
         type: NodePort
+
+- name: Wait for the Riva API server to start
+  kubernetes.core.k8s_info:
+    host: "https://{{ cluster_api_vip }}:6443"
+    kubeconfig: "{{ kubeconfig }}"
+    kind: Pod
+    namespace: "{{ riva_namespace }}"
+    wait: true
+    label_selectors:
+    - app=riva-api
+    wait_condition:
+      type: Ready
+      status: True
+    wait_timeout: 600
+    wait_sleep: 60
+    validate_certs: false

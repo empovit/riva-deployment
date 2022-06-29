@@ -1,0 +1,14 @@
+---
+- name: Deploy an SNO cluster
+  import_playbook: vgpu-openshift-playbook/sno.yml
+  vars:
+    temp_directory: "{{ playbook_dir }}/tmp"
+
+- name: Deploy Riva on the SNO cluster
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - name: riva_server
+      vars:
+        cluster_api_vip: "{{ sno_cluster.api_vip }}"
+
