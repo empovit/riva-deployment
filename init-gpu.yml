@@ -14,6 +14,7 @@
         dest: gpu-openshift-playbook
         version: main
         single_branch: yes
+        depth: 1
 
     - name: Install OpenShift playbook requirements
       command: ansible-galaxy install -r gpu-openshift-playbook/requirements.yml
