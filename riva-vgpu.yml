@@ -10,5 +10,5 @@
   roles:
     - name: riva_server
       vars:
-        cluster_api_vip: "{{ sno_cluster.api_vip }}"
+        cluster_api_vip: "{{ assisted_cluster.api_vip }}"
 
