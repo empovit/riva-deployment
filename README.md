@@ -82,7 +82,9 @@ helm delete -n riva riva-api
 
 ## Riva Client
 
-Download Riva examples (see the Quick Start Guide), and run
+Install the Riva API wheel that can be found under the downloaded quick start directory (e.g. `riva_quickstart_v2.2.1`).
+
+Then for offline speech recognition run
 
 ```sh
 python riva_quickstart_v2.2.1/examples/transcribe_file_offline.py --server <cluster_node>:<node_port> --audio-file <audio_sample.wav>
@@ -93,6 +95,22 @@ e.g.
 ```sh
 python riva_quickstart_v2.2.1/examples/transcribe_file_offline.py --server 147.28.142.251:32222 --audio-file Sports.wav
 ```
+
+For real-time speech recognition using a microphone, first run
+
+```sh
+python riva_quickstart_v2.2.1/examples/transcribe_mic.py --list-devices
+```
+
+then select your input device ID and run
+
+```sh
+python riva_quickstart_v2.2.1/examples/transcribe_mic.py --server <cluster_node>:<node_port> --input-device <input_device>
+```
+
+> **WARNING**: You will need to install dependencies such as PyAudio. The exact installation procedure depends on the system you are running on. Keep in mind that PyAudio is currently broken in Python 3.10. Use an earlier version of Python, for instance by creating a virtual environment (venv). You may also need to adjust the sample rate of your input device.
+
+See the `riva_quickstart_v2.2.1/examples` directory for other quick start Python clients.
 
 # Additional Resources
 
