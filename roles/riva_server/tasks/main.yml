@@ -32,3 +32,5 @@
     wait_timeout: 600
     wait_sleep: 60
     validate_certs: false
+  register: _riva_pod
+  failed_when: not _riva_pod.get("resources")
