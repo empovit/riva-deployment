@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    riva_version: 2.3.0
+    riva_version: 2.2.1
     riva_helm_archive: riva-api-{{ riva_version }}.tgz
 
   tasks:

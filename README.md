@@ -85,13 +85,13 @@ helm delete -n riva riva-api
 Download Riva examples (see the Quick Start Guide), and run
 
 ```sh
-python riva_quickstart_v2.3.0/examples/transcribe_file_offline.py --server <cluster_node>:<node_port> --audio-file <audio_sample.wav>
+python riva_quickstart_v2.2.1/examples/transcribe_file_offline.py --server <cluster_node>:<node_port> --audio-file <audio_sample.wav>
 ```
 
 e.g.
 
 ```sh
-python riva_quickstart_v2.3.0/examples/transcribe_file_offline.py --server 147.28.142.251:32222 --audio-file Sports.wav
+python riva_quickstart_v2.2.1/examples/transcribe_file_offline.py --server 147.28.142.251:32222 --audio-file Sports.wav
 ```
 
 # Additional Resources
