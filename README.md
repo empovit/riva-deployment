@@ -119,5 +119,4 @@ See the `riva_quickstart_v2.2.1/examples` directory for other quick start Python
 * [Riva ASR Overview](https://docs.nvidia.com/deeplearning/riva/user-guide/docs/asr/asr-overview.html)
 * [Riva Tutorials](https://github.com/nvidia-riva/tutorials)
 * [Pre-trained Riva models on NGC](https://catalog.ngc.nvidia.com/models?query=label:%22Riva%22)
-* [Recording Audio from the User](https://web.dev/media-recording-audio/)
 * Some 3rd party audio samples [here](http://www.voiceage.com/Audio-Samples-AMR-WB.html), [here](https://www.signalogic.com/index.pl?page=speech_codec_wav_samples) and [here](https://www.voiptroubleshooter.com/open_speech/index.html)
